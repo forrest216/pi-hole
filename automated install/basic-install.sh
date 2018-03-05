@@ -1814,7 +1814,7 @@ FTLdetect() {
   #qxqx
   local dnsmasqLoc=$(which dnsmasq 2>/dev/null)
   if [[ ${dnsmasqLoc} ]]; then
-    ${PKG_MANAGER} remove dnsmasq
+    ${PKG_MANAGER} remove -y dnsmasq
   fi
 
   str="Detecting architecture"
