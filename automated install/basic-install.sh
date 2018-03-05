@@ -1739,18 +1739,9 @@ FTLinstall() {
   # Local, named variables
   local binary="${1}"
   local latesttag
-  local orig_dir
+  local orig_dir  
 
-  #FTL4.0 onwards will include the dnsmasq binary within itself
-  local str="Removing dnsmasq package from the system"
-  echo -ne "  ${INFO} ${str}..."
-  #qxqx
-  local dnsmasqLoc=$(which dnsmasq 2>/dev/null)
-  if [[ ${dnsmasqLoc} ]]; then
-    ${PKG_MANAGER} remove dnsmasq
-  fi
-    
-  str="Downloading and Installing FTL"
+  local str="Downloading and Installing FTL"
   echo -ne "  ${INFO} ${str}..."
 
   # Get the current working directory
@@ -1817,7 +1808,16 @@ FTLdetect() {
   # Store architecture in a variable
   machine=$(uname -m)
 
-  local str="Detecting architecture"
+  #FTL4.0 onwards will include the dnsmasq binary within itself
+  local str="Removing dnsmasq package from the system"
+  echo -ne "  ${INFO} ${str}..."
+  #qxqx
+  local dnsmasqLoc=$(which dnsmasq 2>/dev/null)
+  if [[ ${dnsmasqLoc} ]]; then
+    ${PKG_MANAGER} remove dnsmasq
+  fi
+
+  str="Detecting architecture"
   echo -ne "  ${INFO} ${str}..."
   # If the machine is arm or aarch
   if [[ "${machine}" == "arm"* || "${machine}" == *"aarch"* ]]; then
