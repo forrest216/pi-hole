@@ -1740,7 +1740,17 @@ FTLinstall() {
   local binary="${1}"
   local latesttag
   local orig_dir
-  local str="Downloading and Installing FTL"
+
+  #FTL4.0 onwards will include the dnsmasq binary within itself
+  local str="Removing dnsmasq package from the system"
+  echo -ne "  ${INFO} ${str}..."
+  #qxqx
+  local dnsmasqLoc=$(which dnsmasq 2>/dev/null)
+  if [[ ${dnsmasqLoc} ]]; then
+    ${PKG_MANAGER} remove dnsmasq
+  fi
+    
+  str="Downloading and Installing FTL"
   echo -ne "  ${INFO} ${str}..."
 
   # Get the current working directory
