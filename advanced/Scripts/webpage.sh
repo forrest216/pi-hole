@@ -145,13 +145,16 @@ ProcessDNSSettings() {
 		if [ -z "${!var}" ]; then
 			break;
 		fi
-		add_dnsmasq_setting "server" "${!var}"
+
+		if [[ "${var}" == "127.0.0.1" ]];then
+			if [[ ! -z "${LOCAL_DNS_PORT}" ]]; then
+				add_dnsmasq_setting "server" "127.0.0.1#${LOCAL_DNS_PORT}"
+			fi
+		else
+			add_dnsmasq_setting "server" "${!var}"
+		fi
 		let COUNTER=COUNTER+1
 	done
-
-  if [ ! -z "${LOCAL_DNS_PORT}" ]; then
-    add_dnsmasq_setting "server" "127.0.0.1#${LOCAL_DNS_PORT}"
-  fi
 
 	delete_dnsmasq_setting "domain-needed"
 
