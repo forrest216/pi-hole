@@ -146,7 +146,7 @@ ProcessDNSSettings() {
 			break;
 		fi
 
-		if [[ "${var}" == "127.0.0.1" ]];then
+		if [[ "${!var}" == "127.0.0.1" ]];then
 			if [[ ! -z "${LOCAL_DNS_PORT}" ]]; then
 				add_dnsmasq_setting "server" "127.0.0.1#${LOCAL_DNS_PORT}"
 			fi
