@@ -41,7 +41,7 @@ processWildcards() {
 }
 
 # Scan an array of files for matching strings
-scanList(){
+scanListFile(){
     # Escape full stops
     local domain="${1//./\\.}" lists="${2}" type="${3:-}"
 
@@ -58,6 +58,59 @@ scanList(){
         "wc"    ) grep -i -o -m 1 "/${domain}/" ${lists} 2>/dev/null;;
         *       ) grep -i "${domain}" ${lists} /dev/null 2>/dev/null;;
     esac
+}
+
+# Scan a passed (possibly multi-line) string for matching strings
+scanListString(){
+    # Escape full stops
+    local domain="${1//./\\.}" list="${2}" type="${3:-}" input="${4}"
+
+    # Prevent grep -i matching slowly: http://bit.ly/2xFXtUX
+    export LC_CTYPE=C
+
+    echo "${type}" > t
+
+    # /dev/null forces filename to be printed when only one list has been generated
+    # shellcheck disable=SC2086
+    local output
+    case "${type}" in
+        "exact" ) output="$(grep -i -E "(^|(?<!#)\\s)${domain}($|\\s|#)" <<< "${input}" 2>/dev/null)";;
+        "wc"    ) output="$(grep -i -o -m 1 "/${domain}/" <<< "${input}" 2>/dev/null)";;
+        *       ) output="$(grep -i "${domain}" <<< "${input}" 2>/dev/null)";;
+    esac
+    if [[ -n "${output}" ]]; then
+        sed "s/^/${list}:/g;" <<< "${output}"
+    else
+        echo ""
+    fi
+}
+
+# Scan Whitelist and Blacklist
+scanDatabaseTable() {
+    # Escape full stops
+    local domain="${1}" list="${2}" type="${3:-}" results
+    domains="$(sqlite3 "${gravityDBfile}" "SELECT domain from vw_${list};")"
+    mapfile -t results <<< "$(scanListString "${domain}" "${list}" "${type}" "${domains}")"
+    if [[ -n "${results[*]}" ]]; then
+        wbMatch=true
+        # Loop through each result in order to print unique file title once
+        for result in "${results[@]}"; do
+            fileName="${result%%:*}"
+            if [[ -n "${blockpage}" ]]; then
+                echo "π ${result}"
+                exit 0
+            elif [[ -n "${exact}" ]]; then
+                echo " ${matchType^} found in ${COL_BOLD}${fileName^}${COL_NC}"
+            else
+                # Only print filename title once per file
+                if [[ ! "${fileName}" == "${fileName_prev:-}" ]]; then
+                    echo " ${matchType^} found in ${COL_BOLD}${fileName^}${COL_NC}"
+                    fileName_prev="${fileName}"
+                fi
+            echo "   ${result#*:}"
+            fi
+        done
+    fi
 }
 
 if [[ "${options}" == "-h" ]] || [[ "${options}" == "--help" ]]; then
@@ -102,29 +155,8 @@ if [[ -n "${str:-}" ]]; then
     exit 1
 fi
 
-# Scan Whitelist and Blacklist
-lists="whitelist.txt blacklist.txt"
-mapfile -t results <<< "$(scanList "${domainQuery}" "${lists}" "${exact}")"
-if [[ -n "${results[*]}" ]]; then
-    wbMatch=true
-    # Loop through each result in order to print unique file title once
-    for result in "${results[@]}"; do
-        fileName="${result%%.*}"
-        if [[ -n "${blockpage}" ]]; then
-            echo "π ${result}"
-            exit 0
-        elif [[ -n "${exact}" ]]; then
-            echo " ${matchType^} found in ${COL_BOLD}${fileName^}${COL_NC}"
-        else
-            # Only print filename title once per file
-            if [[ ! "${fileName}" == "${fileName_prev:-}" ]]; then
-                echo " ${matchType^} found in ${COL_BOLD}${fileName^}${COL_NC}"
-                fileName_prev="${fileName}"
-            fi
-        echo "   ${result#*:}"
-        fi
-    done
-fi
+scanDatabaseTable "${domainQuery}" "whitelist" "${exact}"
+scanDatabaseTable "${domainQuery}" "blacklist" "${exact}"
 
 # Scan Wildcards
 if [[ -e "${wildcardlist}" ]]; then
@@ -132,7 +164,7 @@ if [[ -e "${wildcardlist}" ]]; then
     mapfile -t wildcards <<< "$(processWildcards "${domainQuery}")"
     for match in "${wildcards[@]}"; do
         # Search wildcard list for matches
-        mapfile -t results <<< "$(scanList "${match}" "${wildcardlist}" "wc")"
+        mapfile -t results <<< "$(scanListFile "${match}" "${wildcardlist}" "wc")"
         if [[ -n "${results[*]}" ]]; then
             if [[ -z "${wcMatch:-}" ]] && [[ -z "${blockpage}" ]]; then
                 wcMatch=true
@@ -150,7 +182,7 @@ fi
 lists=("$(cd "$piholeDir" || exit 0; printf "%s\\n" -- *.domains | sort -V)")
 
 # Query blocklists for occurences of domain
-mapfile -t results <<< "$(scanList "${domainQuery}" "${lists[*]}" "${exact}")"
+mapfile -t results <<< "$(scanListFile "${domainQuery}" "${lists[*]}" "${exact}")"
 
 # Handle notices
 if [[ -z "${wbMatch:-}" ]] && [[ -z "${wcMatch:-}" ]] && [[ -z "${results[*]}" ]]; then
