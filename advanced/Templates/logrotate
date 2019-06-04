@@ -1,5 +1,5 @@
 /var/log/pihole.log {
-	# su #
+    create 644 pihole pihole
 	daily
 	copytruncate
 	rotate 5
@@ -10,7 +10,7 @@
 }
 
 /var/log/pihole-FTL.log {
-	# su #
+	create 644 pihole pihole
 	weekly
 	copytruncate
 	rotate 3
