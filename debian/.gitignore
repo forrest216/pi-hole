@@ -3,3 +3,4 @@ files
 *.debhelper.log
 *.debhelper
 *.substvars
+pihole
