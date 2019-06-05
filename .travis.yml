@@ -4,9 +4,16 @@ services:
 language: python
 python:
   - "2.7"
+
+before_install:
+  - sudo apt-get install -y debhelper
+
 install:
   - pip install -r requirements.txt
 
 script:
   # tox.ini handles setup, ordering of docker build first, and then run tests
   - tox
+  # Build DEB package
+  # TODO: Make a full package instead of just a binary package
+  - dpkg-buildpackage -b
