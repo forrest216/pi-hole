@@ -7,5 +7,5 @@ Package: pihole
 Architecture: any
 Depends: pihole-api (= 0.1.0), iproute2, cron, curl, dnsutils, iputils-ping, lsof, netcat,
  psmisc, sudo, unzip, wget, idn2, sqlite3, libcap2-bin, dns-root-data,
- resolvconf, libcap2, ${shlibs:Depends}, ${misc:Depends}
+ resolvconf, libcap2, ${misc:Depends}
 Description: Pi-hole is a network-wide ad blocker
