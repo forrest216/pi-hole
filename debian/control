@@ -1,7 +1,7 @@
 Source: pihole
 Priority: optional
 Maintainer: The Pi-hole Team <adblock@pi-hole.net>
-Build-Depends: debhelper (>= 10), dh-systemd (>= 1.5)
+Build-Depends: debhelper (>= 9)
 
 Package: pihole
 Architecture: any
