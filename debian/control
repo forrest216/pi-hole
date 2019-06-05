@@ -4,8 +4,8 @@ Maintainer: The Pi-hole Team <adblock@pi-hole.net>
 Build-Depends: debhelper (>= 9)
 
 Package: pihole
-Architecture: any
-Depends: pihole-api (= 0.1.0), iproute2, cron, curl, dnsutils, iputils-ping, lsof, netcat,
+Architecture: all
+Depends: pihole-api (>= 0.1.0), pihole-api (<< 0.1.1), iproute2, cron, curl, dnsutils, iputils-ping, lsof, netcat,
  psmisc, sudo, unzip, wget, idn2, sqlite3, libcap2-bin, dns-root-data,
  resolvconf, libcap2, ${misc:Depends}
 Description: Pi-hole is a network-wide ad blocker
