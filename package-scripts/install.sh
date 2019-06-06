@@ -40,6 +40,7 @@ install_scripts() {
     install -m 755 -t "${SCRIPTS_DIR}" advanced/Scripts/COL_TABLE
     install -m 755 -t "${BIN_DIR}" pihole
     install -m 644 -t "${BASH_COMPLETION_DIR}" advanced/bash-completion/pihole
+    install -m 755 -t "${SHARE_DIR}" package-scripts/configure.sh
 }
 
 # Install data files
