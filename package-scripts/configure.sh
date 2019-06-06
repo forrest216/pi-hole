@@ -15,11 +15,9 @@ fresh_install() {
     sed -i "s/59 17/$((1 + RANDOM % 58)) $((12 + RANDOM % 8))/" /etc/cron.d/pihole
 
     # Set the default interface
-    if [ $(grep 'PIHOLE_INTERFACE' -c /etc/pihole/setupVars.conf) -eq 0 ]; then
-        INTERFACE=$(ip --oneline link show up | grep -v "lo" | awk '{print $2}' | \
-            cut -d':' -f1 | cut -d'@' -f1 | head -n 1)
-        echo "PIHOLE_INTERFACE=${INTERFACE}" >> /etc/pihole/setupVars.conf
-    fi
+    INTERFACE=$(ip --oneline link show up | grep -v "lo" | awk '{print $2}' | \
+        cut -d':' -f1 | cut -d'@' -f1 | head -n 1)
+    echo "PIHOLE_INTERFACE=${INTERFACE}" >> /etc/pihole/setupVars.conf
 }
 
 # Called every time Pi-hole is configured
