@@ -10,6 +10,7 @@ DNSMASQ_CONFIG_DIR="${DESTDIR}/etc/dnsmasq.d"
 SUDOERS_DIR="${DESTDIR}/etc/sudoers.d"
 CRON_DIR="${DESTDIR}/etc/cron.d"
 LOGROTATE_DIR="${DESTDIR}/etc/logrotate.d"
+SHARE_DIR="${DESTDIR}/usr/share/pihole"
 
 # Files
 SETUP_VARS_FILE="${CONFIG_DIR}/setupVars.conf"
@@ -18,6 +19,7 @@ DNSMASQ_CONFIG_FILE="${DESTDIR}/etc/dnsmasq.conf"
 SUDOERS_FILE="${SUDOERS_DIR}/pihole"
 CRON_FILE="${CRON_DIR}/pihole"
 LOGROTATE_FILE="${LOGROTATE_DIR}/pihole"
+GRAVITY_SCHEMA_FILE="${SHARE_DIR}/gravity.sql"
 
 # Create required directories
 create_directories() {
@@ -38,6 +40,11 @@ install_scripts() {
     install -m 755 -t "${SCRIPTS_DIR}" advanced/Scripts/COL_TABLE
     install -m 755 -t "${BIN_DIR}" pihole
     install -m 644 -t "${BASH_COMPLETION_DIR}" advanced/bash-completion/pihole
+}
+
+# Install data files
+install_data() {
+    install -m 644 advanced/Templates/gravity.db.sql "${GRAVITY_SCHEMA_FILE}"
 }
 
 # Install configs
@@ -82,6 +89,7 @@ create_setup_vars() {
 
 create_directories
 install_scripts
+install_data
 install_configs
 create_setup_vars
 create_adlists

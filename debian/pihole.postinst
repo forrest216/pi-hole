@@ -5,7 +5,7 @@ if [ "$1" = "configure" ]; then
     adduser --system --group --quiet pihole
 
     # Give the user ownership over various Pi-hole directories
-    chown -R pihole:pihole /etc/pihole /opt/pihole /etc/dnsmasq.conf /etc/dnsmasq.d
+    chown -R pihole:pihole /etc/pihole /opt/pihole /usr/share/pihole /etc/dnsmasq.conf /etc/dnsmasq.d
 
     # Randomize gravity update time
     sed -i "s/59 1 /$((1 + RANDOM % 58)) $((3 + RANDOM % 2))/" /etc/cron.d/pihole
