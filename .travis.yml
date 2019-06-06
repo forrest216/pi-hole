@@ -16,4 +16,4 @@ script:
   - tox
   # Build DEB package
   # TODO: Make a full package instead of just a binary package
-  - sudo dpkg-buildpackage -b
+  - sudo dpkg-buildpackage -b -us -uc
