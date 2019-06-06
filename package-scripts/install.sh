@@ -84,6 +84,8 @@ create_setup_vars() {
         echo "PIHOLE_DNS_1=1.1.1.1"
         echo "PIHOLE_DNS_2=1.0.0.1"
         echo "QUERY_LOGGING=true"
+        echo "IPV4_ADDRESS=0.0.0.0"
+        echo "IPV6_ADDRESS=::"
     }> "${SETUP_VARS_FILE}"
     chmod 644 "${SETUP_VARS_FILE}"
 }
