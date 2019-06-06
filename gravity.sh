@@ -32,9 +32,8 @@ adListFile="${piholeDir}/adlists.list"
 localList="${piholeDir}/local.list"
 VPNList="/etc/openvpn/ipp.txt"
 
-piholeGitDir="/etc/.pihole"
 gravityDBfile="${piholeDir}/gravity.db"
-gravityDBschema="${piholeGitDir}/advanced/Templates/gravity.db.sql"
+gravityDBschema="/usr/share/pihole/gravity.sql"
 optimize_database=false
 
 domainsExtension="domains"
