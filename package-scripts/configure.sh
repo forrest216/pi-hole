@@ -25,6 +25,9 @@ configure() {
     # Give the user ownership over various Pi-hole directories
     chown -R pihole:pihole /etc/pihole /opt/pihole /usr/share/pihole \
         /var/run/pihole /etc/dnsmasq.conf /etc/dnsmasq.d
+
+    # Generate the Dnsmasq config
+    pihole-API generate-dns-config 1> /dev/null
 }
 
 # If there is no previous version, then run the fresh install commands
