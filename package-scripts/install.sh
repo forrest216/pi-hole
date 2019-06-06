@@ -31,6 +31,7 @@ create_directories() {
     install -d -m 755 "${SUDOERS_DIR}"
     install -d -m 755 "${CRON_DIR}"
     install -d -m 755 "${LOGROTATE_DIR}"
+    install -d -m 755 "${SHARE_DIR}"
 }
 
 # Install the Core scripts
