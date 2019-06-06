@@ -11,6 +11,7 @@ SUDOERS_DIR="${DESTDIR}/etc/sudoers.d"
 CRON_DIR="${DESTDIR}/etc/cron.d"
 LOGROTATE_DIR="${DESTDIR}/etc/logrotate.d"
 SHARE_DIR="${DESTDIR}/usr/share/pihole"
+RUN_DIR="${DESTDIR}/var/run/pihole"
 
 # Files
 SETUP_VARS_FILE="${CONFIG_DIR}/setupVars.conf"
@@ -32,6 +33,7 @@ create_directories() {
     install -d -m 755 "${CRON_DIR}"
     install -d -m 755 "${LOGROTATE_DIR}"
     install -d -m 755 "${SHARE_DIR}"
+    install -d -m 755 "${RUN_DIR}"
 }
 
 # Install the Core scripts

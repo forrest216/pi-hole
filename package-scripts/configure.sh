@@ -24,7 +24,7 @@ fresh_install() {
 configure() {
     # Give the user ownership over various Pi-hole directories
     chown -R pihole:pihole /etc/pihole /opt/pihole /usr/share/pihole \
-        /etc/dnsmasq.conf /etc/dnsmasq.d
+        /var/run/pihole /etc/dnsmasq.conf /etc/dnsmasq.d
 }
 
 # If there is no previous version, then run the fresh install commands
