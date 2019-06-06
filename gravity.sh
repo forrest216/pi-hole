@@ -19,7 +19,7 @@ regexconverter="/opt/pihole/wildcard_regex_converter.sh"
 source "${regexconverter}"
 
 basename="pihole"
-PIHOLE_COMMAND="/usr/local/bin/${basename}"
+PIHOLE_COMMAND="/usr/bin/${basename}"
 
 piholeDir="/etc/${basename}"
 
