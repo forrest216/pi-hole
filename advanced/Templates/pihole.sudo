@@ -7,7 +7,4 @@
 # This file is copyright under the latest version of the EUPL.
 # Please see LICENSE file for your rights under this license.
 
-pihole ALL=NOPASSWD: /usr/local/bin/pihole
-
-# Add /usr/local/bin to PATH when using sudo
-Defaults secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+pihole ALL=NOPASSWD: /usr/bin/pihole
