@@ -2462,9 +2462,6 @@ main() {
     if [[ "${EUID}" -eq 0 ]]; then
         # they are root and all is good
         printf "  %b %s\\n" "${TICK}" "${str}"
-        # Show the Pi-hole logo so people know it's genuine since the logo and name are trademarked
-        show_ascii_berry
-        make_temporary_log
     # Otherwise,
     else
         # They do not have enough privileges, so let the user know
@@ -2478,9 +2475,10 @@ main() {
         # If the sudo command exists,
         if is_command sudo ; then
             printf "%b  %b Sudo utility check\\n" "${OVER}"  "${TICK}"
-            # Download the install script and run it with admin rights
-            exec curl -sSL https://raw.githubusercontent.com/pi-hole/pi-hole/master/automated%20install/basic-install.sh | sudo bash "$@"
-            exit $?
+
+            # Change user to root
+            sudo su root
+            USER="root"
         # Otherwise,
         else
             # Let them know they need to run it as root
@@ -2490,6 +2488,10 @@ main() {
             exit 1
         fi
     fi
+
+    # Show the Pi-hole logo so people know it's genuine since the logo and name are trademarked
+    show_ascii_berry
+    make_temporary_log
 
     # Check for supported distribution
     distro_check
