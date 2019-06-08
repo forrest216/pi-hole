@@ -2452,8 +2452,7 @@ copy_to_install_log() {
     chmod 644 "${installLogLoc}"
 }
 
-main() {
-    ######## FIRST CHECK ########
+root_check() {
     # Must be root to install
     local str="Root user check"
     printf "\\n"
@@ -2488,7 +2487,9 @@ main() {
             exit 1
         fi
     fi
+}
 
+main() {
     # Show the Pi-hole logo so people know it's genuine since the logo and name are trademarked
     show_ascii_berry
     make_temporary_log
@@ -2691,6 +2692,12 @@ main() {
         /usr/local/bin/pihole version --current
     fi
 }
+
+# This must be done in a separate statement, as `sudo su` is only applied to
+# new statements
+if [[ "${PH_TEST}" != true ]] ; then
+    root_check
+fi
 
 if [[ "${PH_TEST}" != true ]] ; then
     main "$@"
