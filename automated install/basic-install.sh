@@ -16,6 +16,50 @@
 #
 # curl -sSL https://install.pi-hole.net | bash
 
+root_check() {
+    # Must be root to install
+    local str="Root user check"
+    printf "\\n"
+
+    # If the user's id is zero,
+    if [[ "${EUID}" -eq 0 ]]; then
+        # they are root and all is good
+        printf "  %b %s\\n" "${TICK}" "${str}"
+    # Otherwise,
+    else
+        # They do not have enough privileges, so let the user know
+        printf "  %b %s\\n" "${CROSS}" "${str}"
+        printf "  %b %bScript called with non-root privileges%b\\n" "${INFO}" "${COL_LIGHT_RED}" "${COL_NC}"
+        printf "      The Pi-hole requires elevated privileges to install and run\\n"
+        printf "      Please check the installer for any concerns regarding this requirement\\n"
+        printf "      Make sure to download this script from a trusted source\\n\\n"
+        printf "  %b Sudo utility check" "${INFO}"
+
+        # If the sudo command exists,
+        if is_command sudo ; then
+            printf "%b  %b Sudo utility check\\n" "${OVER}"  "${TICK}"
+
+            # Change user to root
+            sudo su root
+            USER="root"
+        # Otherwise,
+        else
+            # Let them know they need to run it as root
+            printf "%b  %b Sudo utility check\\n" "${OVER}" "${CROSS}"
+            printf "  %b Sudo is needed for the Web Interface to run pihole commands\\n\\n" "${INFO}"
+            printf "  %b %bPlease re-run this installer as root${COL_NC}\\n" "${INFO}" "${COL_LIGHT_RED}"
+            exit 1
+        fi
+    fi
+}
+
+# This must be done in a separate statement and at the top of the script, as
+# `sudo su` is only applied to new statements, and anything previously declared
+# is lost
+if [[ "${PH_TEST}" != true ]] ; then
+    root_check
+fi
+
 # -e option instructs bash to immediately exit if any command [1] has a non-zero exit status
 # We do not want users to end up with a partially working install, so we exit the script
 # instead of continuing the installation with something broken
@@ -2452,43 +2496,6 @@ copy_to_install_log() {
     chmod 644 "${installLogLoc}"
 }
 
-root_check() {
-    # Must be root to install
-    local str="Root user check"
-    printf "\\n"
-
-    # If the user's id is zero,
-    if [[ "${EUID}" -eq 0 ]]; then
-        # they are root and all is good
-        printf "  %b %s\\n" "${TICK}" "${str}"
-    # Otherwise,
-    else
-        # They do not have enough privileges, so let the user know
-        printf "  %b %s\\n" "${CROSS}" "${str}"
-        printf "  %b %bScript called with non-root privileges%b\\n" "${INFO}" "${COL_LIGHT_RED}" "${COL_NC}"
-        printf "      The Pi-hole requires elevated privileges to install and run\\n"
-        printf "      Please check the installer for any concerns regarding this requirement\\n"
-        printf "      Make sure to download this script from a trusted source\\n\\n"
-        printf "  %b Sudo utility check" "${INFO}"
-
-        # If the sudo command exists,
-        if is_command sudo ; then
-            printf "%b  %b Sudo utility check\\n" "${OVER}"  "${TICK}"
-
-            # Change user to root
-            sudo su root
-            USER="root"
-        # Otherwise,
-        else
-            # Let them know they need to run it as root
-            printf "%b  %b Sudo utility check\\n" "${OVER}" "${CROSS}"
-            printf "  %b Sudo is needed for the Web Interface to run pihole commands\\n\\n" "${INFO}"
-            printf "  %b %bPlease re-run this installer as root${COL_NC}\\n" "${INFO}" "${COL_LIGHT_RED}"
-            exit 1
-        fi
-    fi
-}
-
 main() {
     # Show the Pi-hole logo so people know it's genuine since the logo and name are trademarked
     show_ascii_berry
@@ -2692,12 +2699,6 @@ main() {
         /usr/local/bin/pihole version --current
     fi
 }
-
-# This must be done in a separate statement, as `sudo su` is only applied to
-# new statements
-if [[ "${PH_TEST}" != true ]] ; then
-    root_check
-fi
 
 if [[ "${PH_TEST}" != true ]] ; then
     main "$@"
